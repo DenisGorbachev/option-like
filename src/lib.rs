@@ -3,33 +3,51 @@ macro_rules! option_like {
     (
         $(#[$meta:meta])*
         $vis:vis enum $name:ident<T> {
-            $some_name:ident(T),
-            $none_name:ident,
+            $some:ident(T),
+            $none:ident,
         }
 
-        is_some => $is_some_name:ident
-        is_none => $is_none_name:ident
+        is_some => $is_some:ident
+        is_none => $is_none:ident
     ) => {
         $(#[$meta])*
         $vis enum $name<T> {
-            $some_name(T),
-            $none_name,
+            $some(T),
+            $none,
         }
 
         use $name::*;
 
         impl<T> $name<T> {
-            pub fn $is_some_name(&self) -> bool {
+            pub fn $is_some(&self) -> bool {
                 match self {
-                    $some_name(_) => true,
-                    $none_name => false,
+                    $some(_) => true,
+                    $none => false,
                 }
             }
 
-            pub fn $is_none_name(&self) -> bool {
+            pub fn $is_none(&self) -> bool {
                 match self {
-                    $some_name(_) => false,
-                    $none_name => true,
+                    $some(_) => false,
+                    $none => true,
+                }
+            }
+        }
+
+        impl<T> From<Option<T>> for $name<T> {
+            fn from(value: Option<T>) -> Self {
+                match value {
+                    Some(inner) => $some(inner),
+                    None => $none
+                }
+            }
+        }
+
+        impl<T> From<$name<T>> for Option<T> {
+            fn from(value: $name<T>) -> Option<T> {
+                match value {
+                    $some(inner) => Some(inner),
+                    $none => None
                 }
             }
         }
@@ -38,8 +56,10 @@ macro_rules! option_like {
 
 #[cfg(test)]
 mod tests {
+    use std::sync::LazyLock;
+
     option_like!(
-        #[derive(Clone, Debug)]
+        #[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Debug)]
         enum Knowledge<T> {
             Known(T),
             Unknown,
@@ -49,12 +69,20 @@ mod tests {
         is_none => is_unknown
     );
 
+    static KNOWN: LazyLock<Knowledge<bool>> = LazyLock::new(|| Known(true));
+    static UNKNOWN: LazyLock<Knowledge<bool>> = LazyLock::new(|| Unknown);
+
     #[test]
-    fn must_run_map() {
-        use Knowledge::*;
-        let known = Known::<bool>(true);
-        let unknown = Unknown::<bool>;
-        assert!(known.is_known());
-        assert!(unknown.is_unknown());
+    fn test_boolean_methods() {
+        assert!(KNOWN.is_known());
+        assert!(UNKNOWN.is_unknown());
+    }
+
+    #[test]
+    fn test_from() {
+        assert_eq!(Option::<bool>::from(KNOWN.clone()), Some(true));
+        assert_eq!(Option::<bool>::from(UNKNOWN.clone()), None);
+        assert_eq!(Knowledge::<bool>::from(Some(true)), Known(true));
+        assert_eq!(Knowledge::<bool>::from(None), Unknown);
     }
 }
