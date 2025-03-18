@@ -152,6 +152,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1261fe7e33c73b354eab43b1273a57c8f967d0391e80353e51f764ac02cf6775"
 
 [[package]]
+name = "option-like"
+version = "0.1.0"
+dependencies = [
+ "derive-getters",
+ "derive-new",
+ "derive_more 2.0.1",
+ "fmt-derive",
+ "helpful",
+ "standard-traits",
+ "stub-macro",
+ "subtype",
+]
+
+[[package]]
 name = "pin-project-lite"
 version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -212,20 +226,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0e4dccaaaf89514f546c693ddc140f729f958c247918a13380cccc6078391acc"
 dependencies = [
  "proc-macro2",
-]
-
-[[package]]
-name = "rust-public-lib-template"
-version = "0.1.0"
-dependencies = [
- "derive-getters",
- "derive-new",
- "derive_more 2.0.1",
- "fmt-derive",
- "helpful",
- "standard-traits",
- "stub-macro",
- "subtype",
 ]
 
 [[package]]
