@@ -3,11 +3,12 @@ name = "option-like"
 version = "0.1.0"
 edition = "2021"
 description = "Create your own Option-like enum"
+license = "Apache-2.0 OR MIT"
 homepage = "https://github.com/DenisGorbachev/option-like"
 repository = "https://github.com/DenisGorbachev/option-like"
 readme = "README.md"
-keywords = []
-categories = []
+keywords = ["option", "newtype"]
+categories = ["rust-patterns", "development-tools", "data-structures", "no-std", "no-std::no-alloc"]
 
 [package.metadata.details]
 title = "Create your own Option-like enum"

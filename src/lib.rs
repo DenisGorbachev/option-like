@@ -33,6 +33,8 @@
 //! assert_eq!(Cached::<u32>::from(None), Cached::Miss);
 //! ```
 
+#![no_std]
+
 /// Creates a new enum type that behaves like Rust's `Option<T>` but with custom names.
 ///
 /// This macro allows you to create your own Option-like enum with customized names for the variants
@@ -105,8 +107,6 @@ macro_rules! option_like {
 
 #[cfg(test)]
 mod tests {
-    use std::sync::LazyLock;
-
     option_like!(
         #[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Debug)]
         enum Cached<T> {
@@ -118,8 +118,8 @@ mod tests {
         is_none => is_miss
     );
 
-    static HIT: LazyLock<Cached<bool>> = LazyLock::new(|| Hit(true));
-    static MISS: LazyLock<Cached<bool>> = LazyLock::new(|| Miss);
+    const HIT: Cached<bool> = Hit(true);
+    const MISS: Cached<bool> = Miss;
 
     #[test]
     fn test_boolean_methods() {
