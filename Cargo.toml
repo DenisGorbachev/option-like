@@ -10,8 +10,8 @@ keywords = []
 categories = []
 
 [package.metadata.details]
+title = "Create your own Option-like enum"
 tagline = ""
 summary = ""
 announcement = ""
 readme = {}
-title = "Create your own Option-like enum"
