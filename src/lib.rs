@@ -1,3 +1,50 @@
+/// Creates a new enum type that behaves like Rust's `Option<T>` but with custom names.
+///
+/// This macro allows you to create your own Option-like enum with customized names for the variants
+/// and boolean test methods, while providing automatic conversions to and from the standard Option type.
+///
+/// # Parameters
+///
+/// - `$(#[$meta:meta])*`: Optional attributes to apply to the enum (e.g., `#[derive(...)]`)
+/// - `$vis`: Visibility of the enum (e.g., `pub`)
+/// - `$name`: Name of the enum (e.g., `Cached`)
+/// - `$some`: Name of the variant that holds a value (e.g., `Hit`)
+/// - `$none`: Name of the empty variant (e.g., `Miss`)
+/// - `is_some => $is_some`: Name of the method that checks if the enum holds a value (e.g., `is_hit`)
+/// - `is_none => $is_none`: Name of the method that checks if the enum is empty (e.g., `is_miss`)
+///
+/// # Example
+///
+/// ```
+/// use option_like::option_like;
+///
+/// option_like!(
+///     #[derive(Debug, PartialEq)]
+///     pub enum Cached<T> {
+///         Hit(T),
+///         Miss,
+///     }
+///
+///     is_some => is_hit
+///     is_none => is_miss
+/// );
+///
+/// // Create instances
+/// let c1 = Cached::<u32>::Hit(42);
+/// let c2 = Cached::<u32>::Miss;
+///
+/// // Boolean tests
+/// assert!(c1.is_hit());
+/// assert!(c2.is_miss());
+///
+/// // Convert to Option
+/// assert_eq!(Option::<u32>::from(c1), Some(42));
+/// assert_eq!(Option::<u32>::from(c2), None);
+///
+/// // Convert from Option
+/// assert_eq!(Cached::<u32>::from(Some(42)), Cached::Hit(42));
+/// assert_eq!(Cached::<u32>::from(None), Cached::Miss);
+/// ```
 #[macro_export]
 macro_rules! option_like {
     (
@@ -60,29 +107,29 @@ mod tests {
 
     option_like!(
         #[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Debug)]
-        enum Knowledge<T> {
-            Known(T),
-            Unknown,
+        enum Cached<T> {
+            Hit(T),
+            Miss,
         }
 
-        is_some => is_known
-        is_none => is_unknown
+        is_some => is_hit
+        is_none => is_miss
     );
 
-    static KNOWN: LazyLock<Knowledge<bool>> = LazyLock::new(|| Known(true));
-    static UNKNOWN: LazyLock<Knowledge<bool>> = LazyLock::new(|| Unknown);
+    static HIT: LazyLock<Cached<bool>> = LazyLock::new(|| Hit(true));
+    static MISS: LazyLock<Cached<bool>> = LazyLock::new(|| Miss);
 
     #[test]
     fn test_boolean_methods() {
-        assert!(KNOWN.is_known());
-        assert!(UNKNOWN.is_unknown());
+        assert!(HIT.is_hit());
+        assert!(MISS.is_miss());
     }
 
     #[test]
     fn test_from() {
-        assert_eq!(Option::<bool>::from(KNOWN.clone()), Some(true));
-        assert_eq!(Option::<bool>::from(UNKNOWN.clone()), None);
-        assert_eq!(Knowledge::<bool>::from(Some(true)), Known(true));
-        assert_eq!(Knowledge::<bool>::from(None), Unknown);
+        assert_eq!(Option::<bool>::from(HIT.clone()), Some(true));
+        assert_eq!(Option::<bool>::from(MISS.clone()), None);
+        assert_eq!(Cached::<bool>::from(Some(true)), Hit(true));
+        assert_eq!(Cached::<bool>::from(None), Miss);
     }
 }
