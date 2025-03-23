@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2](https://github.com/DenisGorbachev/option-like/compare/v0.1.1...v0.1.2) - 2025-03-23
+
+### Added
+
+- support meta attributes on enum variants
+
 ## [0.1.1](https://github.com/DenisGorbachev/option-like/compare/v0.1.0...v0.1.1) - 2025-03-19
 
 ### Added
