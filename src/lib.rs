@@ -54,7 +54,9 @@ macro_rules! option_like {
     (
         $(#[$meta:meta])*
         $vis:vis enum $name:ident<T> {
+            $(#[$some_meta:meta])*
             $some:ident(T),
+            $(#[$none_meta:meta])*
             $none:ident,
         }
 
@@ -63,7 +65,9 @@ macro_rules! option_like {
     ) => {
         $(#[$meta])*
         $vis enum $name<T> {
+            $(#[$some_meta])*
             $some(T),
+            $(#[$none_meta])*
             $none,
         }
 
@@ -108,9 +112,10 @@ macro_rules! option_like {
 #[cfg(test)]
 mod tests {
     option_like!(
-        #[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Debug)]
+        #[derive(Ord, PartialOrd, Eq, PartialEq, Default, Clone, Debug)]
         enum Cached<T> {
             Hit(T),
+            #[default]
             Miss,
         }
 
