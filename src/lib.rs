@@ -98,6 +98,47 @@ macro_rules! option_like {
                     $none => $none,
                 }
             }
+
+            #[inline(always)]
+            #[track_caller]
+            pub fn unwrap(self) -> T {
+                match self {
+                    $some(val) => val,
+                    $none => unwrap_failed(),
+                }
+            }
+
+            #[inline]
+            pub fn unwrap_or_default(self) -> T
+            where
+                T: Default,
+            {
+                match self {
+                    $some(x) => x,
+                    $none => T::default(),
+                }
+            }
+
+            #[inline]
+            #[track_caller]
+            pub fn unwrap_or_else<F>(self, f: F) -> T
+            where
+                F: FnOnce() -> T,
+            {
+                match self {
+                    $some(x) => x,
+                    $none => f(),
+                }
+            }
+
+            #[inline]
+            #[track_caller]
+            pub fn expect(self, msg: &str) -> T {
+                match self {
+                    $some(val) => val,
+                    $none => expect_failed(msg),
+                }
+            }
         }
 
         impl<T> From<Option<T>> for $name<T> {
@@ -116,6 +157,18 @@ macro_rules! option_like {
                     $none => None
                 }
             }
+        }
+
+        #[cold]
+        #[track_caller]
+        const fn unwrap_failed() -> ! {
+            panic!(stringify!("called `", $name, "::unwrap()` on a `", $none, "` value"))
+        }
+
+        #[cold]
+        #[track_caller]
+        const fn expect_failed(msg: &str) -> ! {
+            panic!("{}", msg)
         }
     };
 }
@@ -155,5 +208,39 @@ mod tests {
     fn test_map() {
         assert_eq!(HIT.clone().map(|t| !t), Hit(false));
         assert_eq!(MISS.clone().map(|t| !t), Miss);
+    }
+
+    #[test]
+    fn test_unwrap_or_default() {
+        assert!(HIT.clone().unwrap_or_default());
+        assert!(!MISS.clone().unwrap_or_default());
+    }
+
+    #[test]
+    fn test_unwrap_or_else() {
+        assert!(HIT.clone().unwrap_or_else(|| false));
+        assert!(MISS.clone().unwrap_or_else(|| true));
+    }
+
+    #[test]
+    fn test_unwrap_no_panic() {
+        assert!(HIT.clone().unwrap());
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_unwrap_panic() {
+        MISS.unwrap();
+    }
+
+    #[test]
+    fn test_expect_no_panic() {
+        assert!(HIT.clone().expect("should not panic"));
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_expect_panic() {
+        MISS.expect("should panic");
     }
 }
