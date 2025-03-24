@@ -187,60 +187,65 @@ mod tests {
         is_none => is_miss
     );
 
-    const HIT: Cached<bool> = Hit(true);
-    const MISS: Cached<bool> = Miss;
+    fn hit() -> Cached<bool> {
+        Hit(true)
+    }
+
+    fn miss() -> Cached<bool> {
+        Miss
+    }
 
     #[test]
     fn test_boolean_methods() {
-        assert!(HIT.is_hit());
-        assert!(MISS.is_miss());
+        assert!(hit().is_hit());
+        assert!(miss().is_miss());
     }
 
     #[test]
     fn test_from() {
-        assert_eq!(Option::<bool>::from(HIT.clone()), Some(true));
-        assert_eq!(Option::<bool>::from(MISS.clone()), None);
+        assert_eq!(Option::<bool>::from(hit()), Some(true));
+        assert_eq!(Option::<bool>::from(miss()), None);
         assert_eq!(Cached::<bool>::from(Some(true)), Hit(true));
         assert_eq!(Cached::<bool>::from(None), Miss);
     }
 
     #[test]
     fn test_map() {
-        assert_eq!(HIT.clone().map(|t| !t), Hit(false));
-        assert_eq!(MISS.clone().map(|t| !t), Miss);
+        assert_eq!(hit().map(|t| !t), Hit(false));
+        assert_eq!(miss().map(|t| !t), Miss);
     }
 
     #[test]
     fn test_unwrap_or_default() {
-        assert!(HIT.clone().unwrap_or_default());
-        assert!(!MISS.clone().unwrap_or_default());
+        assert!(hit().unwrap_or_default());
+        assert!(!miss().unwrap_or_default());
     }
 
     #[test]
     fn test_unwrap_or_else() {
-        assert!(HIT.clone().unwrap_or_else(|| false));
-        assert!(MISS.clone().unwrap_or_else(|| true));
+        assert!(hit().unwrap_or_else(|| false));
+        assert!(miss().unwrap_or_else(|| true));
     }
 
     #[test]
     fn test_unwrap_no_panic() {
-        assert!(HIT.clone().unwrap());
+        assert!(hit().unwrap());
     }
 
     #[test]
     #[should_panic]
     fn test_unwrap_panic() {
-        MISS.unwrap();
+        miss().unwrap();
     }
 
     #[test]
     fn test_expect_no_panic() {
-        assert!(HIT.clone().expect("should not panic"));
+        assert!(hit().expect("should not panic"));
     }
 
     #[test]
     #[should_panic]
     fn test_expect_panic() {
-        MISS.expect("should panic");
+        miss().expect("should panic");
     }
 }
