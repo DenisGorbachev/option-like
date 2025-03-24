@@ -87,6 +87,17 @@ macro_rules! option_like {
                     $none => true,
                 }
             }
+
+            #[inline]
+            pub fn map<U, F>(self, f: F) -> $name<U>
+            where
+                F: FnOnce(T) -> U,
+            {
+                match self {
+                    $some(x) => $some(f(x)),
+                    $none => $none,
+                }
+            }
         }
 
         impl<T> From<Option<T>> for $name<T> {
@@ -138,5 +149,11 @@ mod tests {
         assert_eq!(Option::<bool>::from(MISS.clone()), None);
         assert_eq!(Cached::<bool>::from(Some(true)), Hit(true));
         assert_eq!(Cached::<bool>::from(None), Miss);
+    }
+
+    #[test]
+    fn test_map() {
+        assert_eq!(HIT.clone().map(|t| !t), Hit(false));
+        assert_eq!(MISS.clone().map(|t| !t), Miss);
     }
 }
