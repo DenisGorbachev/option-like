@@ -4,7 +4,6 @@
 
 # Create your own Option-like enum
 
-[![Build](https://github.com/DenisGorbachev/option-like/actions/workflows/ci.yml/badge.svg)](https://github.com/DenisGorbachev/option-like)
 [![Documentation](https://docs.rs/option-like/badge.svg)](https://docs.rs/option-like)
 
 Create your own enum type that behaves like Rust’s `Option` but with custom names.
