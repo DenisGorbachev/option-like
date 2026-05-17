@@ -37,6 +37,126 @@
 #![deny(clippy::arithmetic_side_effects)]
 #![cfg_attr(not(test), deny(unused_crate_dependencies))]
 
+/// Creates the inherent implementation block for an option-like enum.
+#[macro_export]
+macro_rules! option_like_impl {
+    (
+        $name:ident,
+        $some:ident,
+        $none:ident,
+        $is_some:ident,
+        $is_none:ident $(,)?
+    ) => {
+        impl<T> $name<T> {
+            pub fn $is_some(&self) -> bool {
+                match self {
+                    Self::$some(_) => true,
+                    Self::$none => false,
+                }
+            }
+
+            pub fn $is_none(&self) -> bool {
+                match self {
+                    Self::$some(_) => false,
+                    Self::$none => true,
+                }
+            }
+
+            #[inline]
+            pub fn map<U, F>(self, f: F) -> $name<U>
+            where
+                F: FnOnce(T) -> U,
+            {
+                match self {
+                    Self::$some(x) => $name::$some(f(x)),
+                    Self::$none => $name::$none,
+                }
+            }
+
+            #[inline(always)]
+            #[track_caller]
+            pub fn unwrap(self) -> T {
+                match self {
+                    Self::$some(val) => val,
+                    Self::$none => Self::unwrap_failed(),
+                }
+            }
+
+            #[inline]
+            pub fn unwrap_or_default(self) -> T
+            where
+                T: Default,
+            {
+                match self {
+                    Self::$some(x) => x,
+                    Self::$none => T::default(),
+                }
+            }
+
+            #[inline]
+            #[track_caller]
+            pub fn unwrap_or_else<F>(self, f: F) -> T
+            where
+                F: FnOnce() -> T,
+            {
+                match self {
+                    Self::$some(x) => x,
+                    Self::$none => f(),
+                }
+            }
+
+            #[inline]
+            #[track_caller]
+            pub fn expect(self, msg: &str) -> T {
+                match self {
+                    Self::$some(val) => val,
+                    Self::$none => Self::expect_failed(msg),
+                }
+            }
+
+            #[cold]
+            #[track_caller]
+            const fn unwrap_failed() -> ! {
+                panic!(stringify!("called `", $name, "::unwrap()` on a `", $none, "` value"))
+            }
+
+            #[cold]
+            #[track_caller]
+            const fn expect_failed(msg: &str) -> ! {
+                panic!("{}", msg)
+            }
+        }
+    };
+}
+
+/// Creates the `From<Option<T>>` and `Into<Option<T>>` conversions for an option-like enum.
+#[macro_export]
+macro_rules! option_like_from_into_option {
+    (
+        $name:ident,
+        $some:ident,
+        $none:ident $(,)?
+    ) => {
+        impl<T> From<Option<T>> for $name<T> {
+            fn from(value: Option<T>) -> Self {
+                match value {
+                    Some(inner) => Self::$some(inner),
+                    None => Self::$none,
+                }
+            }
+        }
+
+        impl<T> From<$name<T>> for Option<T> {
+            fn from(value: $name<T>) -> Option<T> {
+                match value {
+                    $name::$some(inner) => Some(inner),
+                    $name::$none => None,
+                }
+            }
+        }
+    };
+}
+
 /// Creates a new enum type that behaves like Rust's `Option<T>` but with custom names.
 ///
 /// This macro allows you to create your own Option-like enum with customized names for the variants
@@ -73,105 +193,19 @@ macro_rules! option_like {
             $none,
         }
 
-        use $name::*;
+        $crate::option_like_impl!(
+            $name,
+            $some,
+            $none,
+            $is_some,
+            $is_none,
+        );
 
-        impl<T> $name<T> {
-            pub fn $is_some(&self) -> bool {
-                match self {
-                    $some(_) => true,
-                    $none => false,
-                }
-            }
-
-            pub fn $is_none(&self) -> bool {
-                match self {
-                    $some(_) => false,
-                    $none => true,
-                }
-            }
-
-            #[inline]
-            pub fn map<U, F>(self, f: F) -> $name<U>
-            where
-                F: FnOnce(T) -> U,
-            {
-                match self {
-                    $some(x) => $some(f(x)),
-                    $none => $none,
-                }
-            }
-
-            #[inline(always)]
-            #[track_caller]
-            pub fn unwrap(self) -> T {
-                match self {
-                    $some(val) => val,
-                    $none => unwrap_failed(),
-                }
-            }
-
-            #[inline]
-            pub fn unwrap_or_default(self) -> T
-            where
-                T: Default,
-            {
-                match self {
-                    $some(x) => x,
-                    $none => T::default(),
-                }
-            }
-
-            #[inline]
-            #[track_caller]
-            pub fn unwrap_or_else<F>(self, f: F) -> T
-            where
-                F: FnOnce() -> T,
-            {
-                match self {
-                    $some(x) => x,
-                    $none => f(),
-                }
-            }
-
-            #[inline]
-            #[track_caller]
-            pub fn expect(self, msg: &str) -> T {
-                match self {
-                    $some(val) => val,
-                    $none => expect_failed(msg),
-                }
-            }
-        }
-
-        impl<T> From<Option<T>> for $name<T> {
-            fn from(value: Option<T>) -> Self {
-                match value {
-                    Some(inner) => $some(inner),
-                    None => $none
-                }
-            }
-        }
-
-        impl<T> From<$name<T>> for Option<T> {
-            fn from(value: $name<T>) -> Option<T> {
-                match value {
-                    $some(inner) => Some(inner),
-                    $none => None
-                }
-            }
-        }
-
-        #[cold]
-        #[track_caller]
-        const fn unwrap_failed() -> ! {
-            panic!(stringify!("called `", $name, "::unwrap()` on a `", $none, "` value"))
-        }
-
-        #[cold]
-        #[track_caller]
-        const fn expect_failed(msg: &str) -> ! {
-            panic!("{}", msg)
-        }
+        $crate::option_like_from_into_option!(
+            $name,
+            $some,
+            $none,
+        );
     };
 }
 
@@ -188,6 +222,8 @@ mod tests {
         is_some => is_hit
         is_none => is_miss
     );
+
+    use Cached::*;
 
     fn hit() -> Cached<bool> {
         Hit(true)
