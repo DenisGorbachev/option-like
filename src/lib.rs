@@ -1,6 +1,6 @@
 //! Create your own enum type that behaves like Rust's `Option` but with custom names.
 //!
-//! # Example
+//! ## Example
 //!
 //! ```
 //! use option_like::option_like;
@@ -8,12 +8,12 @@
 //! option_like!(
 //!     #[derive(Debug, PartialEq)]
 //!     pub enum Cached<T> {
-//!         Hit(T),
 //!         Miss,
+//!         Hit(T),
 //!     }
 //!
-//!     is_some => is_hit
 //!     is_none => is_miss
+//!     is_some => is_hit
 //! );
 //!
 //! // Create instances
@@ -42,23 +42,23 @@
 macro_rules! option_like_impl {
     (
         $name:ident,
-        $some:ident,
         $none:ident,
-        $is_some:ident,
-        $is_none:ident $(,)?
+        $some:ident,
+        $is_none:ident,
+        $is_some:ident $(,)?
     ) => {
         impl<T> $name<T> {
+            pub fn $is_none(&self) -> bool {
+                match self {
+                    Self::$none => true,
+                    Self::$some(_) => false,
+                }
+            }
+
             pub fn $is_some(&self) -> bool {
                 match self {
                     Self::$some(_) => true,
                     Self::$none => false,
-                }
-            }
-
-            pub fn $is_none(&self) -> bool {
-                match self {
-                    Self::$some(_) => false,
-                    Self::$none => true,
                 }
             }
 
@@ -134,8 +134,8 @@ macro_rules! option_like_impl {
 macro_rules! option_like_from_into_option {
     (
         $name:ident,
-        $some:ident,
-        $none:ident $(,)?
+        $none:ident,
+        $some:ident $(,)?
     ) => {
         impl<T> From<Option<T>> for $name<T> {
             fn from(value: Option<T>) -> Self {
@@ -167,44 +167,44 @@ macro_rules! option_like_from_into_option {
 /// - `$(#[$meta:meta])*`: Optional attributes to apply to the enum (e.g., `#[derive(...)]`)
 /// - `$vis`: Visibility of the enum (e.g., `pub`)
 /// - `$name`: Name of the enum (e.g., `Cached`)
-/// - `$some`: Name of the variant that holds a value (e.g., `Hit`)
 /// - `$none`: Name of the empty variant (e.g., `Miss`)
-/// - `is_some => $is_some`: Name of the method that checks if the enum holds a value (e.g., `is_hit`)
+/// - `$some`: Name of the variant that holds a value (e.g., `Hit`)
 /// - `is_none => $is_none`: Name of the method that checks if the enum is empty (e.g., `is_miss`)
+/// - `is_some => $is_some`: Name of the method that checks if the enum holds a value (e.g., `is_hit`)
 #[macro_export]
 macro_rules! option_like {
     (
         $(#[$meta:meta])*
         $vis:vis enum $name:ident<T> {
-            $(#[$some_meta:meta])*
-            $some:ident(T),
             $(#[$none_meta:meta])*
             $none:ident,
+            $(#[$some_meta:meta])*
+            $some:ident(T),
         }
 
-        is_some => $is_some:ident
         is_none => $is_none:ident
+        is_some => $is_some:ident
     ) => {
         $(#[$meta])*
         $vis enum $name<T> {
-            $(#[$some_meta])*
-            $some(T),
             $(#[$none_meta])*
             $none,
+            $(#[$some_meta])*
+            $some(T),
         }
 
         $crate::option_like_impl!(
             $name,
-            $some,
             $none,
-            $is_some,
+            $some,
             $is_none,
+            $is_some,
         );
 
         $crate::option_like_from_into_option!(
             $name,
-            $some,
             $none,
+            $some,
         );
     };
 }
@@ -214,13 +214,13 @@ mod tests {
     option_like!(
         #[derive(Ord, PartialOrd, Eq, PartialEq, Default, Clone, Debug)]
         enum Cached<T> {
-            Hit(T),
             #[default]
             Miss,
+            Hit(T),
         }
 
-        is_some => is_hit
         is_none => is_miss
+        is_some => is_hit
     );
 
     use Cached::*;

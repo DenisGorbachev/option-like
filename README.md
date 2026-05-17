@@ -18,12 +18,12 @@ use option_like::option_like;
 option_like!(
     #[derive(Debug, PartialEq)]
     pub enum Cached<T> {
-        Hit(T),
         Miss,
+        Hit(T),
     }
 
-    is_some => is_hit
     is_none => is_miss
+    is_some => is_hit
 );
 
 // Create instances
