@@ -9,6 +9,22 @@ repository = "https://github.com/DenisGorbachev/option-like"
 readme = "README.md"
 keywords = ["option", "newtype"]
 categories = ["rust-patterns", "development-tools", "data-structures", "no-std", "no-std::no-alloc"]
+exclude = [
+    ".*",
+    "*.local.*",
+    "doc/dev",
+    "specs",
+    "README.ts",
+    "AGENTS*.md",
+    "CLAUDE*.md",
+    "deno.json",
+    "commitlint.config.mjs",
+    "lefthook.yml",
+    "mise.toml",
+    "rumdl.toml",
+    "rustfmt.toml",
+    ".yolobox"
+]
 
 [package.metadata.details]
 title = "Create your own Option-like enum"

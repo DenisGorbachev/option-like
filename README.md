@@ -4,9 +4,11 @@
 
 # Create your own Option-like enum
 
+[![Build](https://github.com/DenisGorbachev/option-like/actions/workflows/ci.yml/badge.svg)](https://github.com/DenisGorbachev/option-like)
 [![Documentation](https://docs.rs/option-like/badge.svg)](https://docs.rs/option-like)
 
-Create your own enum type that behaves like Rust’s `Option` but with custom names.
+<!-- crate documentation start -->
+Create your own enum type that behaves like Rust's `Option` but with custom names.
 
 ## Example
 
@@ -40,6 +42,7 @@ assert_eq!(Option::<u32>::from(c2), None);
 assert_eq!(Cached::<u32>::from(Some(42)), Cached::Hit(42));
 assert_eq!(Cached::<u32>::from(None), Cached::Miss);
 ```
+<!-- crate documentation end -->
 
 ## Installation
 

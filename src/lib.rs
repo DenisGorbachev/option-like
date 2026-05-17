@@ -34,6 +34,8 @@
 //! ```
 
 #![no_std]
+#![deny(clippy::arithmetic_side_effects)]
+#![cfg_attr(not(test), deny(unused_crate_dependencies))]
 
 /// Creates a new enum type that behaves like Rust's `Option<T>` but with custom names.
 ///
