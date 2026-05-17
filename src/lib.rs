@@ -57,8 +57,8 @@ macro_rules! option_like_impl {
 
             pub fn $is_some(&self) -> bool {
                 match self {
-                    Self::$some(_) => true,
                     Self::$none => false,
+                    Self::$some(_) => true,
                 }
             }
 
@@ -68,8 +68,8 @@ macro_rules! option_like_impl {
                 F: FnOnce(T) -> U,
             {
                 match self {
-                    Self::$some(x) => $name::$some(f(x)),
                     Self::$none => $name::$none,
+                    Self::$some(x) => $name::$some(f(x)),
                 }
             }
 
@@ -77,8 +77,8 @@ macro_rules! option_like_impl {
             #[track_caller]
             pub fn unwrap(self) -> T {
                 match self {
-                    Self::$some(val) => val,
                     Self::$none => Self::unwrap_failed(),
+                    Self::$some(val) => val,
                 }
             }
 
@@ -88,8 +88,8 @@ macro_rules! option_like_impl {
                 T: Default,
             {
                 match self {
-                    Self::$some(x) => x,
                     Self::$none => T::default(),
+                    Self::$some(x) => x,
                 }
             }
 
@@ -100,8 +100,8 @@ macro_rules! option_like_impl {
                 F: FnOnce() -> T,
             {
                 match self {
-                    Self::$some(x) => x,
                     Self::$none => f(),
+                    Self::$some(x) => x,
                 }
             }
 
@@ -109,8 +109,8 @@ macro_rules! option_like_impl {
             #[track_caller]
             pub fn expect(self, msg: &str) -> T {
                 match self {
-                    Self::$some(val) => val,
                     Self::$none => Self::expect_failed(msg),
+                    Self::$some(val) => val,
                 }
             }
 
@@ -140,8 +140,8 @@ macro_rules! option_like_from_into_option {
         impl<T> From<Option<T>> for $name<T> {
             fn from(value: Option<T>) -> Self {
                 match value {
-                    Some(inner) => Self::$some(inner),
                     None => Self::$none,
+                    Some(inner) => Self::$some(inner),
                 }
             }
         }
@@ -149,8 +149,8 @@ macro_rules! option_like_from_into_option {
         impl<T> From<$name<T>> for Option<T> {
             fn from(value: $name<T>) -> Option<T> {
                 match value {
-                    $name::$some(inner) => Some(inner),
                     $name::$none => None,
+                    $name::$some(inner) => Some(inner),
                 }
             }
         }
