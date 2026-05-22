@@ -405,6 +405,8 @@ A function marked with `#[test]` or `#[tokio::test]`.
 
 * Must return a `Result`
 * Must implement proper error handling via `errgonomic` crate
+* Should use macros from `assertables` crate
+  * Should use `assert_infix` instead of `assert_gt`, `assert_ge`, `assert_lt`, `assert_le`, `assert_eq`
 
 ### Macros
 
@@ -432,6 +434,7 @@ You are running in a sandbox with limited network access.
 name = "option-like"
 version = "0.2.0"
 edition = "2024"
+rust-version = "1.85.0"
 description = "Create your own Option-like enum"
 license = "Apache-2.0 OR MIT"
 homepage = "https://github.com/DenisGorbachev/option-like"
@@ -462,6 +465,18 @@ tagline = ""
 summary = ""
 announcement = ""
 readme = {}
+```
+
+### fnox.toml
+
+```toml
+#:schema https://fnox.jdx.dev/schema.json
+
+if_missing = "error"
+
+[providers]
+keychain = { type = "keychain", service = "rust-public-lib-template" }
+pass = { type = "password-store", prefix = "rust-public-lib-template/" }
 ```
 
 ### src/lib.rs
