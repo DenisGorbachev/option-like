@@ -440,7 +440,7 @@ You are running in a sandbox with limited network access.
 ```toml
 [package]
 name = "option-like"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2024"
 rust-version = "1.85.0"
 description = "Create your own Option-like enum"
