@@ -34,7 +34,6 @@
 //! ```
 
 #![no_std]
-#![deny(clippy::arithmetic_side_effects)]
 #![cfg_attr(not(test), deny(unused_crate_dependencies))]
 
 /// Creates the inherent implementation block for an option-like enum.

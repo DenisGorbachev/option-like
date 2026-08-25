@@ -1,13 +1,14 @@
-[package]
-name = "option-like"
+
+[workspace]
+resolver = "3"
+
+[workspace.package]
 version = "0.2.1"
 edition = "2024"
 rust-version = "1.85.0"
-description = "Create your own Option-like enum"
 license = "Apache-2.0 OR MIT"
 homepage = "https://github.com/DenisGorbachev/option-like"
 repository = "https://github.com/DenisGorbachev/option-like"
-readme = "README.md"
 keywords = ["option", "newtype"]
 categories = ["rust-patterns", "development-tools", "data-structures", "no-std", "no-std::no-alloc"]
 exclude = [
@@ -16,6 +17,7 @@ exclude = [
     "doc/dev",
     "specs",
     "AGENTS.ts",
+    "CargoMetadata.ts",
     "README.ts",
     "AGENTS*.md",
     "CLAUDE*.md",
@@ -23,16 +25,42 @@ exclude = [
     "deno.json",
     "commitlint.config.mjs",
     "fnox.toml",
-    "lefthook.yml",
     "mise.toml",
     "rumdl.toml",
     "rustfmt.toml",
     ".yolobox"
 ]
 
+[workspace.metadata.details]
+name = "option-like"
+title = "Create your own Option-like enum"
+readme = {}
+
+[workspace.lints.rust]
+redundant_imports = "deny"
+unused_import_braces = "deny"
+# unused_qualifications must not be "deny" because our code style has multiple `use Foo::*;`, and some macros (derive_more::Display, strum::Display, strum::EnumString) produce code with full qualifications
+# unused_qualifications = "deny"
+
+[workspace.lints.clippy]
+absolute_paths = "deny"
+arithmetic_side_effects = "deny"
+
+[package]
+name = "option-like"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "Create your own Option-like enum"
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+exclude.workspace = true
+
 [package.metadata.details]
 title = "Create your own Option-like enum"
-tagline = ""
-summary = ""
-announcement = ""
-readme = {}
+
+[lints]
+workspace = true

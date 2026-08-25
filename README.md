@@ -50,6 +50,10 @@ assert_eq!(Cached::<u32>::from(None), Cached::Miss);
 cargo add option-like
 ```
 
+## Other packages
+
+This workspace has no other packages.
+
 ## Gratitude
 
 Like the project? [⭐ Star this repo](https://github.com/DenisGorbachev/option-like) on GitHub!
