@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.2](https://github.com/DenisGorbachev/option-like/compare/v0.2.1...v0.2.2) - 2026-08-28
+
+### Fixed
+
+- CargoMetadata
+- update errgonomic
+- update errgonomic
+- update errgonomic
+- support
+- README
+- refactor to support workspaces
+- update errgonomic
+- update errgonomic
+- clippy
+- clippy
+- general
+- Cargo
+- absolute_paths
+- Cargo
+- bump Rust version
+- AGENTS
+
+### Other
+
+- Merge remote-tracking branch 'repoconf-rust-public-lib-template/main'
+
 ## [0.2.1](https://github.com/DenisGorbachev/option-like/compare/v0.2.0...v0.2.1) - 2026-05-17
 
 ### Fixed
