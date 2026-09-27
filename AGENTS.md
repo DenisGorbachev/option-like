@@ -498,6 +498,16 @@ Notes:
 
 - Should match the thread topic
 
+#### Chat thread id heading
+
+A Markdown heading level 3 that contains only [chat thread id](#chat-thread-id).
+
+Examples:
+
+- `### RVC`
+- `### AKE`
+- `### LMY`
+
 #### findings.md
 
 - If it exists:
@@ -516,6 +526,19 @@ Notes:
     - If there is at least one proposed fix:
       - Then: "\n\n" and a Markdown nested list of fixes where each fix must have a format `{number}. {description}` (the numbers should start from 1 for each list of fixes)
       - Else: the exact text "none."
+
+#### Publishable package
+
+A package that has a remote whose name contains `public` or `pre-public` and ends with `template`.
+
+### Project info
+
+#### `git remote`
+
+```shell
+origin
+repoconf-rust-public-lib-template
+```
 
 ### Project files
 
@@ -538,7 +561,7 @@ cargo-binstall = "1.10.15"
 "npm:@commitlint/types" = "19.5.0"
 "cargo:cargo-insert-docs" = "1.6.0"
 "cargo:cargo-hack" = "0.6.33"
-"cargo:cargo-nextest" = "0.9.102"
+"cargo:cargo-nextest" = "0.9.145"
 "cargo:cargo-expand" = "1.0.114"
 "cargo:taplo-cli" = "0.10.0"
 "cargo:rumdl" = "0.1.0"
@@ -670,17 +693,17 @@ depends = ["agent:test:code", "agent:test:code:integration", "agent:test:code:sl
 [tasks."agent:test:code"]
 # don't include `--fail-fast` because it's better to let the agent see all failures
 # reduce output to save tokens
-run = [{ task = "test:code", args = ["--cargo-quiet", "--hide-progress-bar", "--status-level", "fail", "--final-status-level", "flaky"] }]
+run = [{ task = "test:code", args = ["--cargo-quiet", "--show-progress", "none", "--no-input-handler", "--status-level", "fail", "--final-status-level", "flaky", "--no-fail-fast"] }]
 
 [tasks."agent:test:code:integration"]
 # see also: "test:code:integration"
 # `--test-threads 1` because integration tests must be run sequentially
-run = [{ task = "test:code", args = ["--cargo-quiet", "--hide-progress-bar", "--status-level", "fail", "--final-status-level", "flaky", "--ignore-default-filter", "--max-fail", "1", "--test-threads", "1", "integration_tests::"] }]
+run = [{ task = "test:code", args = ["--cargo-quiet", "--show-progress", "none", "--no-input-handler", "--status-level", "fail", "--final-status-level", "flaky", "--ignore-default-filter", "--max-fail", "1", "--test-threads", "1", "integration_tests::"] }]
 
 [tasks."agent:test:code:slow"]
 # see also: "test:code:slow"
 # `--test-threads` is omitted because slow tests may be run in parallel
-run = [{ task = "test:code", args = ["--cargo-quiet", "--hide-progress-bar", "--status-level", "fail", "--final-status-level", "flaky", "--ignore-default-filter", "--max-fail", "1", "slow_tests::"] }]
+run = [{ task = "test:code", args = ["--cargo-quiet", "--show-progress", "none", "--no-input-handler", "--status-level", "fail", "--final-status-level", "flaky", "--ignore-default-filter", "--max-fail", "1", "slow_tests::"] }]
 ```
 
 #### fnox.toml
