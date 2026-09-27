@@ -526,28 +526,13 @@ Examples:
 
 A package that has a remote whose name contains `public` or `pre-public` and ends with `template`.
 
-### Project info
-
-#### `git remote`
-
-```shell
-origin
-repoconf-rust-public-lib-template
-```
-
-### Project files
-
-#### Publishable package
-
-A package that has a remote whose name contains `public` or `pre-public` and ends with `template`.
-
 ## Project info
 
 ### `git remote`
 
 ```shell
 origin
-repoconf-rust-pre-public-lib-template
+repoconf-rust-public-lib-template
 ```
 
 ## Project files
@@ -747,7 +732,7 @@ age = { type = "age", recipients = [
 resolver = "3"
 
 [workspace.package]
-version = "0.2.1"
+version = "0.2.2"
 edition = "2024"
 rust-version = "1.85.0"
 license = "Apache-2.0 OR MIT"
@@ -811,7 +796,7 @@ title = "Create your own Option-like enum"
 workspace = true
 ```
 
-#### src/lib.rs
+### src/lib.rs
 
 ````rust
 //! Create your own enum type that behaves like Rust's `Option` but with custom names.
