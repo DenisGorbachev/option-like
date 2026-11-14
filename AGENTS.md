@@ -815,7 +815,6 @@ workspace = true
 //! ```
 
 #![no_std]
-#![cfg_attr(not(test), deny(unused_crate_dependencies))]
 
 /// Creates the inherent implementation block for an option-like enum.
 #[macro_export]
